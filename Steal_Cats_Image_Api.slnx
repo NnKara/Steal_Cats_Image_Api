@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="../StealCatsImage.Application/StealCatsImage.Application.csproj" />
+  <Project Path="../StealCatsImage.Domain/StealCatsImage.Domain.csproj" />
+  <Project Path="../StealCatsImage.Infrastructure/StealCatsImage.Infrastructure.csproj" />
+  <Project Path="../StealCatsImage.Tests.Integration/StealCatsImage.Tests.Integration.csproj" />
+  <Project Path="../StealCatsImage.Tests.Unit/StealCatsImage.Tests.Unit.csproj" />
+  <Project Path="Steal_Cats_Image_Api.csproj" />
+</Solution>
