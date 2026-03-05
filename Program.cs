@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using StealCatsImage.Application.Interfaces.ClientInterfaces;
 using StealCatsImage.Application.Interfaces.Repositories;
+using StealCatsImage.Application.Interfaces.ServiceInterfaces;
+using StealCatsImage.Application.Services;
 using StealCatsImage.Infrastructure.Clients.CatApiClient;
 using StealCatsImage.Infrastructure.Data;
 using StealCatsImage.Infrastructure.Repositories;
@@ -15,6 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<ICatRepository, CatRepository>();
+builder.Services.AddScoped<ICatService, CatService>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 
 builder.Services.AddHttpClient("TheCatApi", http =>
@@ -23,7 +27,7 @@ builder.Services.AddHttpClient("TheCatApi", http =>
     http.DefaultRequestHeaders.Add("x-api-key", builder.Configuration["TheCatApi:ApiKey"]!);
 });
 
-builder.Services.AddScoped<CatApiClient, CatApiClient>();
+builder.Services.AddScoped<ICatApiClient, CatApiClient>();
 
 var app = builder.Build();
 
