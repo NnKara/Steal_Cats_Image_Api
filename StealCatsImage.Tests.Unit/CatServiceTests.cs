@@ -146,10 +146,10 @@ public class CatServiceTests
 public class MockCatRepository : ICatRepository
 {
     public CatEntity? CatToReturn { get; set; }
-    public (List<CatEntity> Items, int TotalCount) PagedResult { get; set; }
-    public (List<CatEntity> Items, int TotalCount) PagedByTagResult { get; set; }
-    public HashSet<string> ExistingIds { get; set; }
-    public List<CatEntity> AddedCats { get; }
+    public (List<CatEntity> Items, int TotalCount) PagedResult { get; set; } = ([], 0);
+    public (List<CatEntity> Items, int TotalCount) PagedByTagResult { get; set; } = ([], 0);
+    public HashSet<string> ExistingIds { get; set; } = [];
+    public List<CatEntity> AddedCats { get; } = [];
 
     public async Task AddRangeAsync(List<CatEntity> cats, CancellationToken ct = default)
     {
