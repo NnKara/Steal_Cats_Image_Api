@@ -6,6 +6,8 @@ using StealCatsImage.Application.Services;
 using StealCatsImage.Infrastructure.Clients.CatApiClient;
 using StealCatsImage.Infrastructure.Data;
 using StealCatsImage.Infrastructure.Repositories;
+using Hangfire;
+using Hangfire.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +17,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddScoped<ICatRepository, CatRepository>();
+
 builder.Services.AddScoped<ICatService, CatService>();
+
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 
 builder.Services.AddHttpClient("TheCatApi", http =>
@@ -29,7 +35,14 @@ builder.Services.AddHttpClient("TheCatApi", http =>
 
 builder.Services.AddScoped<ICatApiClient, CatApiClient>();
 
+builder.Services.AddHangfire(configuration => configuration
+.UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection")));
+
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
+
+app.UseHangfireDashboard();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

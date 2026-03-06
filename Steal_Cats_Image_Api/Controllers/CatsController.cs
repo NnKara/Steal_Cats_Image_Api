@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Mvc;
 using StealCatsImage.Application.Interfaces.ServiceInterfaces;
 
 namespace Steal_Cats_Image_Api.Controllers
@@ -14,15 +15,27 @@ namespace Steal_Cats_Image_Api.Controllers
             _catService = catService;
         }
 
-        [HttpPost("fetch")]
-        public async Task<IActionResult> FetchCats(CancellationToken ct)
-        {
-            var inserted = await _catService.FetchCatsAsync(25, ct);
+        //[HttpPost("fetch")]
+        //public async Task<IActionResult> FetchCats(CancellationToken ct)
+        //{
+        //    var inserted = await _catService.FetchCatsAsync(25, ct);
 
-            return Ok(new
+        //    return Ok(new
+        //    {
+        //        message = "Cats fetched successfully",
+        //        inserted
+        //    });
+        //}
+
+        [HttpPost("fetch")]
+        public IActionResult FetchCats([FromQuery] int limit = 25)
+        {
+            var jobId = BackgroundJob.Enqueue<ICatService>(x => x.FetchCatsAsync(limit, CancellationToken.None));
+
+            return Accepted(new
             {
-                message = "Cats fetched successfully",
-                inserted
+                message = "Cat fetch job started",
+                jobId
             });
         }
 
