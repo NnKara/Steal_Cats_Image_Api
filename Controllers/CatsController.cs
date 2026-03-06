@@ -37,50 +37,28 @@ namespace Steal_Cats_Image_Api.Controllers
             return Ok(cat);
         }
 
-        //Retrieve cat images with paging
+        //Retrieve cat images filtered by page or by page-tag
         [HttpGet]
-        public async Task<IActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default)
-        {
-            if (page < 1) page = 1;
-            if (pageSize < 1) pageSize = 10;
-            if (pageSize > 100) pageSize = 100;
-
-            var result = await _catService.GetPagedAsync(page, pageSize, ct);
-
-            return Ok(new
-            {
-                page,
-                pageSize,
-                totalCount = result.TotalCount,
-                items = result.Items
-            });
-        }
-
-        //Retrieve cat images filtered by tag with paging
-        [HttpGet("by-tag")]
         public async Task<IActionResult> GetByTag(
-            [FromQuery] string tag,
+            [FromQuery] string? tag,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             CancellationToken ct = default)
         {
-            if (string.IsNullOrWhiteSpace(tag))
-                return BadRequest(new { message = "Query parameter 'tag' is required." });
-
             if (page < 1) page = 1;
             if (pageSize < 1) pageSize = 10;
             if (pageSize > 100) pageSize = 100;
 
-            var result = await _catService.GetPagedByTagAsync(tag, page, pageSize, ct);
-
-            return Ok(new
+            if (string.IsNullOrWhiteSpace(tag))
             {
-                tag,
-                page,
-                pageSize,
-                totalCount = result.TotalCount,
-                items = result.Items
-            });
+                var result = await _catService.GetPagedAsync(page, pageSize, ct);
+                return Ok(new { page, pageSize, totalCount = result.TotalCount, items = result.Items });
+            }
+            else
+            {
+                var result = await _catService.GetPagedByTagAsync(tag, page, pageSize, ct);
+                return Ok(new { tag, page, pageSize, totalCount = result.TotalCount, items = result.Items });
+            }
         }
     }
 }
