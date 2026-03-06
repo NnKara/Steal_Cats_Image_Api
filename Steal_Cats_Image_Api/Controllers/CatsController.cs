@@ -39,15 +39,10 @@ namespace Steal_Cats_Image_Api.Controllers
 
         //Retrieve cat images filtered by page or by page-tag
         [HttpGet]
-        public async Task<IActionResult> GetByTag(
-            [FromQuery] string? tag,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10,
-            CancellationToken ct = default)
+        public async Task<IActionResult> GetByTag([FromQuery] string? tag,[FromQuery] int page = 1,[FromQuery] int pageSize = 10,CancellationToken ct = default)
         {
-            if (page < 1) page = 1;
-            if (pageSize < 1) pageSize = 10;
-            if (pageSize > 100) pageSize = 100;
+            if (page < 1 || pageSize < 1 || pageSize > 100)
+                return BadRequest("Page number must be >= 1 and pageSize between 1 and 100");
 
             if (string.IsNullOrWhiteSpace(tag))
             {
