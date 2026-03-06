@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace StealCatsImage.Infrastructure.Clients.Models
 {
@@ -27,8 +23,8 @@ namespace StealCatsImage.Infrastructure.Clients.Models
 
     public class CatApiBreedResponse
     {
-        [JsonPropertyName("personality")]
-        public string? Personality { get; set; }
+        [JsonPropertyName("temperament")]
+        public string? Temperament { get; set; }
     }
 }
 

@@ -2,11 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using StealCatsImage.Application.Interfaces.Repositories;
 using StealCatsImage.Domain.Entities;
 using StealCatsImage.Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StealCatsImage.Infrastructure.Repositories
 {

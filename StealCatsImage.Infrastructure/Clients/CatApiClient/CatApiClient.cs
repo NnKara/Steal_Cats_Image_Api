@@ -1,7 +1,6 @@
-﻿using StealCatsImage.Application.DTOs;
+using StealCatsImage.Application.DTOs;
 using StealCatsImage.Application.Interfaces.ClientInterfaces;
 using StealCatsImage.Infrastructure.Clients.Models;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace StealCatsImage.Infrastructure.Clients.CatApiClient
@@ -30,7 +29,7 @@ namespace StealCatsImage.Infrastructure.Clients.CatApiClient
                 ImageUrl = x.Url,
                 Width = x.Width,
                 Height = x.Height,
-                Temperament = x.Breeds.FirstOrDefault()?.Personality
+                Temperament = x.Breeds?.FirstOrDefault()?.Temperament
             }).ToList();
         }
     }

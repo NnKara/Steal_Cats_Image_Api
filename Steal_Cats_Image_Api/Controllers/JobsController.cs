@@ -10,23 +10,32 @@ namespace Steal_Cats_Image_Api.Controllers
         [HttpGet("{id}")]
         public IActionResult GetJobStatus(string id)
         {
-            var monitoringApi = JobStorage.Current.GetMonitoringApi();
-            var jobDetails = monitoringApi.JobDetails(id);
-
-            if (jobDetails == null)
-                return NotFound(new { message = $"Job with id {id} was not found." });
-
-            var state = jobDetails.History?.FirstOrDefault()?.StateName ?? "Unknown";
-            var createdAt = jobDetails.CreatedAt;
-
-
-            return Ok(new
+            try
             {
-                jobId = id,
-                state,
-                createdAt,
-                message = GetStatusMessage(state)
-            });
+                var monitoringApi = JobStorage.Current.GetMonitoringApi();
+                var jobDetails = monitoringApi.JobDetails(id);
+
+                if (jobDetails == null)
+                    return NotFound(new { message = $"Job with id {id} was not found." });
+
+                var state = jobDetails.History?.FirstOrDefault()?.StateName ?? "Unknown";
+                var createdAt = jobDetails.CreatedAt;
+
+
+                return Ok(new
+                {
+                    jobId = id,
+                    state,
+                    createdAt,
+                    message = GetStatusMessage(state)
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(503, new { message = "Job status service is temporarily unavailable." });
+            }
+
+
         }
         private string GetStatusMessage(string state) => state switch
         {

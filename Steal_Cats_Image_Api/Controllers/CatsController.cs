@@ -1,4 +1,4 @@
-﻿using Hangfire;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using StealCatsImage.Application.Interfaces.ServiceInterfaces;
 
@@ -29,17 +29,26 @@ namespace Steal_Cats_Image_Api.Controllers
 
         [HttpPost("fetch")]
         public IActionResult FetchCats([FromQuery] int limit = 25)
-        {
-            var jobId = BackgroundJob.Enqueue<ICatService>(x => x.FetchCatsAsync(limit, CancellationToken.None));
+        {          
+            if (limit < 25 || limit > 100)
+                return BadRequest(new { message = "Limit must be between 25 and 100" });
 
-            return Accepted(new
+            try
             {
-                message = "Cat fetch job started",
-                jobId
-            });
+                var jobId = BackgroundJob.Enqueue<ICatService>(x => x.FetchCatsAsync(limit, CancellationToken.None));
+
+                return Accepted(new
+                {
+                    message = "Cat fetch job started",
+                    jobId
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(503, new { message = "Background job service is temporarily unavailable. Please try again later." });
+            }
         }
 
-        //Retrieve cat image by id
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id, CancellationToken ct)
         {
@@ -50,7 +59,6 @@ namespace Steal_Cats_Image_Api.Controllers
             return Ok(cat);
         }
 
-        //Retrieve cat images filtered by page or by page-tag
         [HttpGet]
         public async Task<IActionResult> GetByTag([FromQuery] string? tag,[FromQuery] int page = 1,[FromQuery] int pageSize = 10,CancellationToken ct = default)
         {

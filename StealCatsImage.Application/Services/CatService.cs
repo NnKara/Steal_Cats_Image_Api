@@ -28,12 +28,14 @@ public sealed class CatService : ICatService
         try
         {
             var apiCats = await _catApi.GetCatsAsync(limit, ct);
-            var existingIds = await _cats.GetExistingCatIdsAsync(apiCats.Select(c => c.CatId).ToList(), ct);
+
+            var filteredCats = apiCats.Where(c => !string.IsNullOrEmpty(c.CatId)).ToList();
+            var existingIds = await _cats.GetExistingCatIdsAsync(filteredCats.Select(c => c.CatId).ToList(), ct);
 
             var newCats = new List<CatEntity>();
             var tagCache = new Dictionary<string, TagEntity>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var cat in apiCats)
+            foreach (var cat in filteredCats)
             {
                 if (existingIds.Contains(cat.CatId))
                     continue;
