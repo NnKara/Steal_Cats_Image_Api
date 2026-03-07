@@ -9,23 +9,13 @@ namespace Steal_Cats_Image_Api.Controllers
     public sealed class CatsController : ControllerBase
     {
         private readonly ICatService _catService;
+        private readonly ILogger<CatsController> _logger;
 
-        public CatsController(ICatService catService)
+        public CatsController(ICatService catService, ILogger<CatsController> logger)
         {
             _catService = catService;
+            _logger = logger;
         }
-
-        //[HttpPost("fetch")]
-        //public async Task<IActionResult> FetchCats(CancellationToken ct)
-        //{
-        //    var inserted = await _catService.FetchCatsAsync(25, ct);
-
-        //    return Ok(new
-        //    {
-        //        message = "Cats fetched successfully",
-        //        inserted
-        //    });
-        //}
 
         [HttpPost("fetch")]
         public IActionResult FetchCats([FromQuery] int limit = 25)
@@ -43,8 +33,9 @@ namespace Steal_Cats_Image_Api.Controllers
                     jobId
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Failed to enqueue cat fetch job (limit={Limit})", limit);
                 return StatusCode(503, new { message = "Background job service is temporarily unavailable. Please try again later." });
             }
         }

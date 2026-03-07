@@ -85,6 +85,7 @@ public sealed class CatService : ICatService
             if (newCats.Count > 0)
                 await _cats.AddRangeAsync(newCats, ct);
 
+            _logger.LogInformation("Fetched cats from TheCatAPI. Added {Count} new cats", newCats.Count);
             return newCats.Count;
         }
         catch (Exception ex)

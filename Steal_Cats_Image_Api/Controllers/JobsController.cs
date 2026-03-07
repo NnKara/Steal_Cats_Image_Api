@@ -1,4 +1,4 @@
-﻿using Hangfire;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Steal_Cats_Image_Api.Controllers
@@ -7,6 +7,13 @@ namespace Steal_Cats_Image_Api.Controllers
     [Route("api/[controller]")]
     public class JobsController : ControllerBase
     {
+        private readonly ILogger<JobsController> _logger;
+
+        public JobsController(ILogger<JobsController> logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetJobStatus(string id)
         {
@@ -16,7 +23,9 @@ namespace Steal_Cats_Image_Api.Controllers
                 var jobDetails = monitoringApi.JobDetails(id);
 
                 if (jobDetails == null)
+                {
                     return NotFound(new { message = $"Job with id {id} was not found." });
+                }
 
                 var state = jobDetails.History?.FirstOrDefault()?.StateName ?? "Unknown";
                 var createdAt = jobDetails.CreatedAt;
@@ -30,8 +39,9 @@ namespace Steal_Cats_Image_Api.Controllers
                     message = GetStatusMessage(state)
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Failed to get job status (jobId={JobId})", id);
                 return StatusCode(503, new { message = "Job status service is temporarily unavailable." });
             }
 
