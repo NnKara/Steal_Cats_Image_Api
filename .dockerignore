@@ -1,0 +1,13 @@
+**/.dockerignore
+**/.git
+**/.vs
+**/bin
+**/obj
+**/*.user
+**/*.suo
+**/TestResults
+**/*.Tests*
+**/.idea
+**/node_modules
+**/*.md
+!Steal_Cats_Image_Api/README.md
