@@ -7,6 +7,7 @@ using StealCatsImage.Infrastructure.Clients.CatApiClient;
 using StealCatsImage.Infrastructure.Data;
 using StealCatsImage.Infrastructure.Repositories;
 using Hangfire;
+using Hangfire.MemoryStorage;
 using Hangfire.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +17,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var isTesting = builder.Environment.IsEnvironment("Testing");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    if (isTesting)
+        options.UseInMemoryDatabase("StealCatsIntegration");
+    else
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 builder.Services.AddScoped<ICatRepository, CatRepository>();
 
@@ -33,8 +40,13 @@ builder.Services.AddHttpClient("TheCatApi", http =>
 
 builder.Services.AddScoped<ICatApiClient, CatApiClient>();
 
-builder.Services.AddHangfire(configuration => configuration
-.UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection")));
+builder.Services.AddHangfire(configuration =>
+{
+    if (isTesting)
+        configuration.UseMemoryStorage();
+    else
+        configuration.UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"));
+});
 
 builder.Services.AddHangfireServer();
 
@@ -43,7 +55,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    if (isTesting)
+        db.Database.EnsureCreated();
+    else
+        db.Database.Migrate();
 }
 
 app.UseHangfireDashboard();
@@ -61,3 +76,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
