@@ -74,16 +74,19 @@ json
 
 The application uses SQL Server as its primary database.
 
-Configure the connection strings in appsettings.json:
+Add the connection strings to `appsettings.json`:
 
-json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=StealCatsImageDb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True",
-  "HangfireConnection": "Server=localhost\\SQLEXPRESS;Database=StealCatsImageDb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True"
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=StealCatsImageDb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True",
+    "HangfireConnection": "Server=localhost\\SQLEXPRESS;Database=StealCatsImageDb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True"
+  }
 }
+```
 
 
--Migrations run automatically at startup, so ensure the database is accessible and the connection string is correct before running the application.
+-Migrations run automatically at startup. Ensure the database server is running and the connection string is correct.
 
 ------------------------------------------------------------------------
 
@@ -125,19 +128,25 @@ You can run the application also by using Docker.
 
 From the root directory of the repository, run:
 
-docker build -t steal-cats-api -f Steal_Cats_Image_Api/Dockerfile 
+```bash
+docker build -t steal-cats-api -f Steal_Cats_Image_Api/Dockerfile .
+```
 
 
 **Run Container**
 
-Start the container and pass the required configuration values as environment variables:
+Start the container and pass the required configuration as environment variables.
 
-docker run -p 8080:8080 \
-  -e ConnectionStrings__DefaultConnection="Server=host.docker.internal;Database=StealCatsImageDb;User Id=sa;Password=YourPassword;TrustServerCertificate=True" \
-  -e ConnectionStrings__HangfireConnection="Server=host.docker.internal;Database=StealCatsImageDb;User Id=sa;Password=YourPassword;TrustServerCertificate=True" \
-  -e TheCatApi__ApiKey="YOUR_API_KEY" \
-  -e TheCatApi__BaseUrl="https://api.thecatapi.com/v1/" \
+**Windows PowerShell**
+
+```powershell
+docker run -p 8080:8080 `
+  -e ConnectionStrings__DefaultConnection="Server=host.docker.internal;Database=StealCatsImageDb;User Id=sa;Password=YourPassword;TrustServerCertificate=True" `
+  -e ConnectionStrings__HangfireConnection="Server=host.docker.internal;Database=StealCatsImageDb;User Id=sa;Password=YourPassword;TrustServerCertificate=True" `
+  -e TheCatApi__ApiKey="YOUR_API_KEY" `
+  -e TheCatApi__BaseUrl="https://api.thecatapi.com/v1/" `
   steal-cats-api
+```
 
 API runs at: http://localhost:8080
 
@@ -153,7 +162,7 @@ API runs at: http://localhost:8080
 
   GET || /api/cats?tag=playful&page=1&pageSize=10 || **Fetch cats by tag**
 
-	GET || /api/jobs/{jobId} || **Fetches job status**
+  GET || /api/jobs/{jobId} || **Fetches job status**
 
 
 
