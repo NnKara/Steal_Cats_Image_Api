@@ -51,21 +51,16 @@ namespace Steal_Cats_Image_Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByTag([FromQuery] string? tag,[FromQuery] int page = 1,[FromQuery] int pageSize = 10,CancellationToken ct = default)
+        public async Task<IActionResult> GetByTag([FromQuery] string tag,[FromQuery] int page = 1,[FromQuery] int pageSize = 10,CancellationToken ct = default)
         {
+            if (string.IsNullOrWhiteSpace(tag))
+                return BadRequest(new { message = "Tag is required" });
+
             if (page < 1 || pageSize < 1 || pageSize > 100)
                 return BadRequest("Page number must be >= 1 and pageSize between 1 and 100");
 
-            if (string.IsNullOrWhiteSpace(tag))
-            {
-                var result = await _catService.GetPagedAsync(page, pageSize, ct);
-                return Ok(new { page, pageSize, totalCount = result.TotalCount, items = result.Items });
-            }
-            else
-            {
                 var result = await _catService.GetPagedByTagAsync(tag, page, pageSize, ct);
-                return Ok(new { tag, page, pageSize, totalCount = result.TotalCount, items = result.Items });
-            }
+                return Ok(result);          
         }
     }
 }

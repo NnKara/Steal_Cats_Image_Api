@@ -61,12 +61,14 @@ public class CatServiceTests
         };
         var service = CreateService(catRepo: fakeRepo);
 
-        var (items, total) = await service.GetPagedAsync(page: 1, pageSize: 10);
+        var result = await service.GetPagedAsync(page: 1, pageSize: 10);
 
-        Assert.Equal(2, total);
-        Assert.Equal(2, items.Count);
-        Assert.Equal("cat1", items[0].CatId);
-        Assert.Equal("cat2", items[1].CatId);
+        Assert.Equal(2, result.TotalCount);
+        Assert.Equal(2, result.Items.Count);
+        Assert.Equal(1, result.Page);
+        Assert.Equal(10, result.PageSize);
+        Assert.Equal("cat1", result.Items[0].CatId);
+        Assert.Equal("cat2", result.Items[1].CatId);
     }
 
     [Fact]
@@ -83,11 +85,12 @@ public class CatServiceTests
         };
         var service = CreateService(catRepo: fakeRepo);
 
-        var (items, total) = await service.GetPagedByTagAsync("friendly", page: 1, pageSize: 10);
+        var result = await service.GetPagedByTagAsync("friendly", page: 1, pageSize: 10);
 
-        Assert.Equal(1, total);
-        Assert.Single(items);
-        Assert.Equal("cat1", items[0].CatId);
+        Assert.Equal(1, result.TotalCount);
+        Assert.Single(result.Items);
+        Assert.Equal("friendly", result.Tag);
+        Assert.Equal("cat1", result.Items[0].CatId);
     }
 
     [Fact]

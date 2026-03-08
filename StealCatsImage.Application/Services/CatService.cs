@@ -109,20 +109,12 @@ public sealed class CatService : ICatService
         }
     }
 
-    public async Task<(List<CatDto> Items, int TotalCount)> GetPagedAsync(int page, int pageSize, CancellationToken ct = default)
+    public async Task<PageCatResponseDto<CatDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct = default)
     {
         try
         {
             var result = await _cats.GetPagedAsync(page, pageSize, ct);
-
-            var items = result.Items;
-            var total = result.TotalCount;
-
-            var mappedItems = items
-            .Select(ModelMapperDto.Map)
-            .ToList();
-
-            return (mappedItems, total);
+            return ModelMapperDto.ToPageResponse(result.Items, result.TotalCount, page, pageSize);
         }
         catch (Exception ex)
         {
@@ -131,12 +123,12 @@ public sealed class CatService : ICatService
         }
     }
 
-    public async Task<(List<CatDto> Items, int TotalCount)> GetPagedByTagAsync(string tag, int page, int pageSize, CancellationToken ct = default)
+    public async Task<PageCatResponseDto<CatDto>> GetPagedByTagAsync(string tag, int page, int pageSize, CancellationToken ct = default)
     {
         try
         {
             var (items, total) = await _cats.GetPagedByTagAsync(tag, page, pageSize, ct);
-            return (items.Select(ModelMapperDto.Map).ToList(), total);
+            return ModelMapperDto.ToPageResponse(items, total, page, pageSize, tag);
         }
         catch (Exception ex)
         {
