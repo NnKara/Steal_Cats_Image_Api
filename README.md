@@ -130,22 +130,7 @@ From the root directory of the repository, run:
 
 ```bash
 docker build -t steal-cats-api -f Steal_Cats_Image_Api/Dockerfile .
-```
-
-
-**Run Container**
-
-Start the container and pass the required configuration as environment variables.
-
-**Windows PowerShell**
-
-```powershell
-docker run -p 8080:8080 `
-  -e ConnectionStrings__DefaultConnection="Server=host.docker.internal;Database=StealCatsImageDb;User Id=sa;Password=YourPassword;TrustServerCertificate=True" `
-  -e ConnectionStrings__HangfireConnection="Server=host.docker.internal;Database=StealCatsImageDb;User Id=sa;Password=YourPassword;TrustServerCertificate=True" `
-  -e TheCatApi__ApiKey="YOUR_API_KEY" `
-  -e TheCatApi__BaseUrl="https://api.thecatapi.com/v1/" `
-  steal-cats-api
+docker compose up --build
 ```
 
 API runs at: http://localhost:8080
