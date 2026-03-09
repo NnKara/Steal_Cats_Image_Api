@@ -10,7 +10,7 @@ services:
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=StealCatsImageDb;User Id=sa;Password=@yourPassword;TrustServerCertificate=True
       - ConnectionStrings__HangfireConnection=Server=sqlserver;Database=StealCatsImageDb;User Id=sa;Password=@yourPassword;TrustServerCertificate=True
-      - TheCatApi__ApiKey=${THECATAPI_KEY:-yourApiCatKey}
+      - TheCatApi__ApiKey=${THECATAPI_KEY}
     depends_on:
       sqlserver:
         condition: service_healthy
