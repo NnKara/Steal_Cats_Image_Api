@@ -85,7 +85,7 @@ Add the connection strings to `appsettings.json`:
 }
 ```
 
-
+-Be sure to replace the connection string with your actual database server details. The above example assumes a local SQL Server Express instance.
 -Migrations run automatically at startup. Ensure the database server is running and the connection string is correct.
 
 ------------------------------------------------------------------------
@@ -108,6 +108,8 @@ Navigate to the API project directory and restore the dependencies:
 By default, the API runs at:
 
 HTTP: http://localhost:5004
+
+-If specific port is taken you can change it in launchSettings.json
 
 **API Documentation**
 
@@ -133,7 +135,12 @@ docker build -t steal-cats-api -f Steal_Cats_Image_Api/Dockerfile .
 docker compose up --build
 ```
 
-API runs at: http://localhost:8080
+Be sure you are inside the folder: 
+```bash
+cd ..
+```
+
+Swagger documentation: http://localhost:5004/swagger
 
 ------------------------------------------------------------------------
 

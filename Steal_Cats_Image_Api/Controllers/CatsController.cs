@@ -6,7 +6,7 @@ namespace Steal_Cats_Image_Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public sealed class CatsController : ControllerBase
+    public class CatsController : ControllerBase
     {
         private readonly ICatService _catService;
         private readonly ILogger<CatsController> _logger;
