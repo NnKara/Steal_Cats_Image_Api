@@ -50,17 +50,28 @@ namespace Steal_Cats_Image_Api.Controllers
             return Ok(cat);
         }
 
+        //not in final commit 
         [HttpGet]
-        public async Task<IActionResult> GetByTag([FromQuery] string tag,[FromQuery] int page = 1,[FromQuery] int pageSize = 10,CancellationToken ct = default)
+        public async Task<IActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default)
+        {
+            if (page < 1 || pageSize < 1 || pageSize > 100)
+                return BadRequest(new { message = "Page must be >= 1 and pageSize between 1 and 100" });
+
+            var result = await _catService.GetPagedAsync(page, pageSize, ct);
+            return Ok(result);
+        }
+
+        [HttpGet("by-tag")]
+        public async Task<IActionResult> GetPagedByTag([FromQuery] string tag, [FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(tag))
                 return BadRequest(new { message = "Tag is required" });
 
             if (page < 1 || pageSize < 1 || pageSize > 100)
-                return BadRequest("Page number must be >= 1 and pageSize between 1 and 100");
+                return BadRequest(new { message = "Page must be >= 1 and pageSize between 1 and 100" });
 
-                var result = await _catService.GetPagedByTagAsync(tag, page, pageSize, ct);
-                return Ok(result);          
+            var result = await _catService.GetPagedByTagAsync(tag.Trim(), page, pageSize, ct);
+            return Ok(result);
         }
     }
 }
